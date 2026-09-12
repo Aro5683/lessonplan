@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <!-- html2canvas & jsPDF for Image and PDF generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
             --bg-color: #f8fafc;
@@ -899,7 +901,151 @@ function hexToString(hex) {
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*(.*?)\*/g, '<em>$1</em>');
     }
-</script>
 
+
+    let renderedPageElements = [];
+
+function renderLessonPlanPages(decodedText) {
+    // Hidden container off-screen to render DOM nodes for canvas capture
+    let container = document.getElementById('presentationArea');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'presentationArea';
+        document.body.appendChild(container);
+    }
+    
+    // Position off-screen so rendering occurs cleanly in the background
+    container.style.position = 'absolute';
+    container.style.left = '-9999px';
+    container.style.top = '-9999px';
+    container.style.width = '1200px'; 
+    container.innerHTML = '';
+
+    let pagesRaw = decodedText.split(/PAGE\s+0[1-7]:?/i).filter(p => p.trim().length > 0);
+    if (pagesRaw.length === 0) pagesRaw = [decodedText];
+
+    renderedPageElements = [];
+
+    pagesRaw.forEach((pageContent, idx) => {
+        const pageNum = idx + 1;
+        const pageDiv = document.createElement('div');
+        pageDiv.className = 'landscape-page';
+        pageDiv.style.width = '1200px';
+        pageDiv.style.marginBottom = '20px';
+
+        let bodyContent = '';
+        let isPageOne = (pageNum === 1);
+
+        if (pageNum >= 4 && pageNum <= 6) {
+            bodyContent = renderTablePage(pageContent);
+        } else if (isPageOne) {
+            bodyContent = renderCenteredMetadataPage(pageContent);
+        } else {
+            bodyContent = formatStructuredSections(pageContent);
+        }
+
+        let html = `
+            <div class="page-header">
+                <h2>PAGE 0${pageNum}</h2>
+                <span class="page-tag"><i class="fa-solid fa-book-open"></i> B.Ed Lesson Plan</span>
+            </div>
+            <div class="page-body ${isPageOne ? 'page-1-center' : ''}">
+                ${bodyContent}
+            </div>
+        `;
+
+        if (pageNum === 7 || idx === pagesRaw.length - 1) {
+            html += `
+                <div class="signature-footer">
+                    <span><i class="fa-solid fa-pen-fancy"></i> Signature of Student Teacher</span>
+                    <span><i class="fa-solid fa-pen-nib"></i> Signature of Guide Teacher</span>
+                </div>
+            `;
+        }
+
+        pageDiv.innerHTML = html;
+        container.appendChild(pageDiv);
+        renderedPageElements.push(pageDiv);
+    });
+
+    // Show download modal instead of displaying pages inline
+    document.getElementById('downloadModal').classList.add('active');
+}
+
+function closeDownloadModal() {
+    document.getElementById('downloadModal').classList.remove('active');
+}
+
+// Download as ordered multi-page PDF (16:9 Landscape)
+async function downloadAsPDF() {
+    const pdfBtn = document.getElementById('pdfBtn');
+    pdfBtn.innerText = 'Generating PDF...';
+    pdfBtn.disabled = true;
+
+    const { jsPDF } = window.jspdf;
+    // 16:9 aspect ratio dimensions in mm (297mm x 167mm)
+    const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: [297, 167]
+    });
+
+    for (let i = 0; i < renderedPageElements.length; i++) {
+        const elem = renderedPageElements[i];
+        const canvas = await html2canvas(elem, { scale: 2, logging: false });
+        const imgData = canvas.toDataURL('image/png');
+
+        if (i > 0) pdf.addPage([297, 167], 'landscape');
+        pdf.addImage(imgData, 'PNG', 0, 0, 297, 167);
+    }
+
+    pdf.save('BEd_Lesson_Plan.pdf');
+    pdfBtn.innerHTML = '<i class="fa-solid fa-file-pdf"></i> Download Complete PDF (7 Pages)';
+    pdfBtn.disabled = false;
+}
+
+// Download each page individually as PNG images
+async function downloadAsImages() {
+    const imgBtn = document.getElementById('imgBtn');
+    imgBtn.innerText = 'Exporting Images...';
+    imgBtn.disabled = true;
+
+    for (let i = 0; i < renderedPageElements.length; i++) {
+        const elem = renderedPageElements[i];
+        const canvas = await html2canvas(elem, { scale: 2, logging: false });
+        
+        const link = document.createElement('a');
+        link.download = `Lesson_Plan_Page_0${i + 1}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        
+        // Brief delay between downloads
+        await new Promise(r => setTimeout(r, 300));
+    }
+
+    imgBtn.innerHTML = '<i class="fa-solid fa-file-image"></i> Download Pages as Images (PNG)';
+    imgBtn.disabled = false;
+}
+</script>
+<!-- DOWNLOAD MODAL FOR RENDERED LESSON PLAN -->
+<div class="modal-overlay" id="downloadModal">
+    <div class="modal-card" style="max-width: 500px;">
+        <button class="close-modal-btn" onclick="closeDownloadModal()"><i class="fa-solid fa-xmark"></i></button>
+        <div class="modal-icon">
+            <i class="fa-solid fa-file-pdf"></i>
+        </div>
+        <h3>Lesson Plan Decoded!</h3>
+        <p>Your lesson plan has been successfully processed. Choose your preferred export format below:</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+            <button class="chatgpt-btn" onclick="downloadAsPDF()" id="pdfBtn">
+                <i class="fa-solid fa-file-pdf"></i> Download Complete PDF (7 Pages)
+            </button>
+            <button class="chatgpt-btn" onclick="downloadAsImages()" id="imgBtn" style="background: #0f172a;">
+                <i class="fa-solid fa-file-image"></i> Download Pages as Images (PNG)
+            </button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
