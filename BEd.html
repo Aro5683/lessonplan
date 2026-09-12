@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>B.Ed Lesson Planner & Hex Engine</title>
+    <title>B.Ed Lesson Planner </title>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -518,7 +518,7 @@
 
 <div class="main-container">
     <div class="header">
-        <h1><i class="fa-solid fa-graduation-cap"></i> B.Ed Lesson Planner</h1>
+        <h1><i class="fa-solid fa-graduation-cap"></i> B.Ed Guru</h1>
         <p>Mobile-Optimized  B.Ed Lesson Planner</p>
     </div>
 
@@ -823,14 +823,14 @@ OUTPUT INSTRUCTIONS:
         document.getElementById(modalId).classList.remove('active');
     }
 
-    function openChatGPTWithPrompt() {
-        if (generatedHexPromptString) {
-            const targetUrl = `https://chatgpt.com/?q=${encodeURIComponent(generatedHexPromptString)}`;
-            window.open(targetUrl, '_blank');
-            closeModal('successModal');
-        }
+   function openChatGPTWithPrompt() {
+    if (generatedHexPromptString) {
+        const fullPrompt = generatedHexPromptString + " Give .txt file only";
+        const targetUrl = `https://chatgpt.com/?q=${encodeURIComponent(fullPrompt)}`;
+        window.open(targetUrl, '_blank');
+        closeModal('successModal');
     }
-
+}
     function handleFileUpload(e) {
         const file = e.target.files[0];
         if (!file) return;
