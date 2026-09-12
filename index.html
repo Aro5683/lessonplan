@@ -574,7 +574,7 @@
                 </div>
                 <div class="form-group full-width">
                     <label><i class="fa-solid fa-list-check"></i> Content Ideas / Key Points *</label>
-                    <textarea id="contentIdeas" rows="3" placeholder="Enter key topics to cover in tables..." required></textarea>
+                    <textarea id="contentIdeas" rows="3" placeholder="Ippa neenga Life Mathematics nu oru Lesson Teach panna poring apdinaa.. athula ennana topic neenga teach panninga (eg. Profit and loss)" required></textarea>
                 </div>
             </div>
 
@@ -701,6 +701,7 @@
         </div>
         <h3>Lesson Plan Ready!</h3>
         <p>Your file is parsed. Select an option below to save your 7-page plan:</p>
+          <p>B.Ed Guru lesson planner can make mistakes. check important info.</p>
         
         <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
             <button class="chatgpt-btn" onclick="downloadAsPDF()" id="pdfBtn">
@@ -790,7 +791,8 @@ Teaching Aids:
 - ${teachingAids}
 
 Previous Knowledge:
-- Previous Knowledge of Learners: Students already have basic knowledge about ${topic}. Followed by 3 quick teacher entry questions.
+- Previous Knowledge of Learners: Students already have basic knowledge about ${topic}. 
+- Followed by 3 quick teacher entry questions.
 
 PAGE 03: Motivation 
 - A brief 5-6 line dialogue exchange between Teacher and Student leading to the topic.
@@ -812,7 +814,8 @@ Follow up:
 OUTPUT INSTRUCTIONS:
 1. Do NOT generate any PDF document or PYTHON.
 2. Convert the entire generated text strictly into Hexadecimal string data.
-3. Output ONLY a single downloadable .txt file containing the raw hex code string.`;
+3. Output ONLY a single downloadable .txt file containing the raw hex code string.
+Give txt file only.`;
 
         generatedHexPromptString = stringToHex(rawPrompt);
         
@@ -824,14 +827,13 @@ OUTPUT INSTRUCTIONS:
         document.getElementById(modalId).classList.remove('active');
     }
 
-  function openChatGPTWithPrompt() {
-    if (generatedHexPromptString) {
-        const fullPrompt = generatedHexPromptString + " Give .txt file only";
-        const targetUrl = `https://chatgpt.com/?q=${encodeURIComponent(fullPrompt)}`;
-        window.open(targetUrl, '_blank');
-        closeModal('successModal');
+ function openChatGPTWithPrompt() {
+        if (generatedHexPromptString) {
+            const targetUrl = `https://chatgpt.com/?q=${encodeURIComponent(generatedHexPromptString)}`;
+            window.open(targetUrl, '_blank');
+            closeModal('successModal');
+        }
     }
-}
     function handleFileUpload(e) {
         const file = e.target.files[0];
         if (!file) return;
