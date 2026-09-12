@@ -37,7 +37,7 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             min-height: 100vh;
-            padding: 40px 20px;
+            padding: 16px;
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -46,53 +46,67 @@
         .main-container {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 24px;
+            border-radius: 20px;
             box-shadow: var(--shadow);
             width: 100%;
-            max-width: 1200px;
-            padding: 40px;
+            max-width: 900px;
+            padding: 20px;
             margin: 0 auto;
+        }
+
+        @media (min-width: 640px) {
+            body { padding: 30px 20px; }
+            .main-container { padding: 32px; }
         }
 
         .header {
             text-align: center;
-            margin-bottom: 35px;
+            margin-bottom: 24px;
         }
 
         .header h1 {
-            font-size: 2.2rem;
+            font-size: 1.6rem;
             font-weight: 800;
             color: var(--text-main);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             letter-spacing: -0.5px;
         }
 
         .header p {
             color: var(--text-muted);
-            font-size: 0.95rem;
+            font-size: 0.88rem;
             font-weight: 500;
+        }
+
+        @media (min-width: 640px) {
+            .header h1 { font-size: 2rem; }
+            .header p { font-size: 0.95rem; }
         }
 
         .tab-nav {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 35px;
+            gap: 10px;
+            margin-bottom: 24px;
+            width: 100%;
         }
 
         .tab-btn {
+            flex: 1;
+            max-width: 200px;
+            justify-content: center;
             background: #f1f5f9;
             border: 1px solid var(--border-color);
-            padding: 12px 28px;
+            padding: 10px 16px;
             border-radius: 50px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 700;
             color: var(--text-muted);
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .tab-btn:hover {
@@ -109,8 +123,15 @@
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        @media (min-width: 640px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
         }
 
         .form-group {
@@ -124,10 +145,10 @@
         }
 
         label {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.6px;
+            letter-spacing: 0.5px;
             color: var(--accent-primary);
             display: flex;
             align-items: center;
@@ -138,11 +159,12 @@
             background: var(--input-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 12px 16px;
-            font-size: 0.95rem;
+            padding: 12px 14px;
+            font-size: 0.9rem;
             color: var(--text-main);
             outline: none;
             transition: all 0.2s ease;
+            width: 100%;
         }
 
         input::placeholder, textarea::placeholder {
@@ -160,12 +182,12 @@
             color: #ffffff;
             border: none;
             border-radius: 12px;
-            padding: 14px 24px;
+            padding: 14px 20px;
             font-size: 0.95rem;
             font-weight: 700;
             cursor: pointer;
             width: 100%;
-            margin-top: 20px;
+            margin-top: 16px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -175,14 +197,13 @@
 
         .action-btn:hover {
             background: var(--accent-primary-hover);
-            transform: translateY(-1px);
         }
 
         .upload-dropzone {
             border: 2px dashed #cbd5e1;
             background: #f8fafc;
             border-radius: 16px;
-            padding: 35px 20px;
+            padding: 30px 16px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -194,11 +215,11 @@
             border-color: var(--accent-primary);
         }
 
-        /* HIDDEN OFF-SCREEN CANVAS STAGING AREA */
+        /* HIDDEN OFF-SCREEN STAGING AREA FOR CANVAS RENDERING */
         #offscreenStage {
             position: absolute;
             top: 0;
-            left: 0;
+            left: -9999px;
             width: 1120px;
             pointer-events: none;
             opacity: 0;
@@ -207,7 +228,7 @@
 
         .landscape-page {
             width: 1120px;
-            height: 630px; /* Exact 16:9 Aspect Ratio */
+            height: 630px; /* 16:9 Aspect Ratio */
             background: #ffffff;
             color: #0f172a;
             border-radius: 16px;
@@ -380,14 +401,14 @@
             color: #0f172a;
         }
 
-        /* POPUP MODALS */
+        /* POPUP MODALS - RESPONSIVE FOR MOBILE */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(15, 23, 42, 0.4);
+            background: rgba(15, 23, 42, 0.5);
             backdrop-filter: blur(4px);
             display: flex;
             justify-content: center;
@@ -396,6 +417,7 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.2s ease;
+            padding: 16px;
         }
 
         .modal-overlay.active {
@@ -407,37 +429,41 @@
             background: #ffffff;
             border: 1px solid var(--border-color);
             border-radius: 20px;
-            padding: 30px;
-            width: 90%;
-            max-width: 460px;
+            padding: 24px 20px;
+            width: 100%;
+            max-width: 420px;
             text-align: center;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             position: relative;
         }
 
+        @media (min-width: 640px) {
+            .modal-card { padding: 30px; }
+        }
+
         .modal-icon {
-            width: 60px;
-            height: 60px;
+            width: 52px;
+            height: 52px;
             background: #ecfdf5;
             border: 2px solid var(--accent-primary);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 0 auto 16px;
-            font-size: 1.5rem;
+            margin: 0 auto 14px;
+            font-size: 1.3rem;
             color: var(--accent-primary);
         }
 
         .modal-card h3 {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 800;
             color: var(--text-main);
             margin-bottom: 8px;
         }
 
         .modal-card p {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--text-muted);
             margin-bottom: 20px;
             line-height: 1.5;
@@ -448,9 +474,9 @@
             color: #ffffff;
             font-weight: 700;
             border: none;
-            padding: 14px 20px;
+            padding: 12px 16px;
             border-radius: 12px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             cursor: pointer;
             width: 100%;
             display: flex;
@@ -471,13 +497,14 @@
 
         .close-modal-btn {
             position: absolute;
-            top: 14px;
-            right: 14px;
+            top: 12px;
+            right: 12px;
             background: transparent;
             border: none;
             color: var(--text-muted);
             font-size: 1.1rem;
             cursor: pointer;
+            padding: 6px;
         }
 
         .close-modal-btn:hover {
@@ -492,7 +519,7 @@
 <div class="main-container">
     <div class="header">
         <h1><i class="fa-solid fa-graduation-cap"></i> B.Ed Lesson Planner</h1>
-        <p>Enforced Machine Prompting & Export Engine</p>
+        <p>Mobile-Optimized  B.Ed Lesson Planner</p>
     </div>
 
     <!-- Navigation Tabs -->
@@ -519,7 +546,7 @@
                 </div>
                 <div class="form-group">
                     <label><i class="fa-solid fa-school"></i> School Name *</label>
-                    <input type="text" id="schoolName" placeholder="e.g., Govt. Hr. Sec. School" required>
+                    <input type="text" id="schoolName" placeholder="e.g., Govt. Hr. Sec. School, Adyar" required>
                 </div>
                 <div class="form-group">
                     <label><i class="fa-solid fa-layer-group"></i> Standard / Class *</label>
@@ -543,32 +570,107 @@
                 </div>
                 <div class="form-group full-width">
                     <label><i class="fa-solid fa-toolbox"></i> Teaching Aids *</label>
-                    <input type="text" id="teachingAids" placeholder="e.g., Chart, Flashcards, Blackboard, Chalk" required>
+                    <input type="text" id="teachingAids" placeholder="e.g., Chart, Flashcards, Blackboard" required>
                 </div>
                 <div class="form-group full-width">
                     <label><i class="fa-solid fa-list-check"></i> Content Ideas / Key Points *</label>
-                    <textarea id="contentIdeas" rows="3" placeholder="Enter key topics to cover in tables..." required></textarea>
+                    <textarea id="contentIdeas" rows="3" placeholder="Ippa neenga Life Mathematics nu oru lesson teach pana poringa apdinaa.. athula ennana topics nadatha poringa.. (eg. Profit and Loss)"></textarea>
                 </div>
             </div>
 
             <button type="submit" class="action-btn">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Prompt
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Generate
             </button>
         </form>
+<br/>
+<div class="quick-guide">
+    <div class="guide-title">
+        <i class="fa-solid fa-circle-info"></i> How to Use
+    </div>
+    <div class="steps-wrapper">
+        <div class="guide-step">
+            <span class="step-num">1</span>
+            <p>Fill form & Click <strong>Generate </strong></p>
+        </div>
+        <div class="guide-step">
+            <span class="step-num">2</span>
+            <p>Paste in <strong>ChatGPT</strong> & download <strong>.txt</strong></p>
+        </div>
+        <div class="guide-step">
+            <span class="step-num">3</span>
+            <p>Upload <strong>.txt</strong> in Step 2 to get <strong>PDF</strong></p>
+        </div>
+    </div>
+</div>
+
+<style>
+.quick-guide {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 20px;
+}
+.guide-title {
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #10a37f;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.steps-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.guide-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: #334155;
+}
+.step-num {
+    background: #10a37f;
+    color: #fff;
+    font-weight: 800;
+    font-size: 0.75rem;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+@media (min-width: 640px) {
+    .steps-wrapper { 
+        flex-direction: row; 
+        justify-content: space-between; 
+    }
+}
+</style>
+<footer style="margin-top: 30px; padding: 16px; text-align: center; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--border-color);">
+    Created By <a href="https://chat.whatsapp.com/LYNE4CxDLlN2Qwm1rBKOY1" target="_blank" style="color: var(--accent-primary); font-weight: 700; text-decoration: none;">B.Ed Thagavalgal Group | Aro</a> and developed with ❤️
+</footer>
     </div>
 
     <!-- TAB 2: HEX DECODER & FILE UPLOAD -->
     <div id="tab2-content" class="hidden">
         <div class="upload-dropzone" onclick="document.getElementById('fileInput').click()">
-            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2.2rem; color: var(--accent-primary); margin-bottom: 10px;"></i>
-            <h3>Upload ChatGPT (.txt file)</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Select or drop the generated text file here</p>
+            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2rem; color: var(--accent-primary); margin-bottom: 8px;"></i>
+            <h3>Upload ChatGPT File (.txt)</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Tap to select or drop your file here</p>
             <input type="file" id="fileInput" accept=".txt" class="hidden" onchange="handleFileUpload(event)">
         </div>
     </div>
 </div>
 
-<!-- OFF-SCREEN RENDERING STAGE -->
+<!-- OFF-SCREEN RENDERING STAGE FOR PDF/PNG CONVERSION -->
 <div id="offscreenStage"></div>
 
 <!-- SUCCESS MODAL FOR PROMPT GENERATION -->
@@ -579,7 +681,7 @@
             <i class="fa-solid fa-check"></i>
         </div>
         <h3>Prompt Generated!</h3>
-        <p>Click below to launch <strong>ChatGPT</strong> directly with your prompt prefilled.</p>
+        <p>Prompt copied! Launch <strong>ChatGPT</strong> below to paste and process your prompt.</p>
         <button class="chatgpt-btn" onclick="openChatGPTWithPrompt()">
             <i class="fa-solid fa-arrow-up-right-from-square"></i> Launch ChatGPT
         </button>
@@ -593,16 +695,19 @@
         <div class="modal-icon">
             <i class="fa-solid fa-file-pdf"></i>
         </div>
-        <h3>Lesson Plan Decoded!</h3>
-        <p>Your lesson plan is processed. Choose your preferred format to save:</p>
+        <h3>Lesson Plan Ready!</h3>
+        <p>Your file is parsed. Select an option below to save your 7-page plan:</p>
+ <p>B.Ed Lesson Planner can make mistakes. Check important info</p>
         
-        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
             <button class="chatgpt-btn" onclick="downloadAsPDF()" id="pdfBtn">
-                <i class="fa-solid fa-file-pdf"></i> Download Complete PDF (7 Pages)
+                <i class="fa-solid fa-file-pdf"></i> Download PDF (7 Pages)
             </button>
-          
+           
         </div>
+
     </div>
+
 </div>
 
 <script>
@@ -763,7 +868,7 @@ OUTPUT INSTRUCTIONS:
             let html = `
                 <div class="page-header">
                     <h2>PAGE 0${pageNum}</h2>
-                    <span class="page-tag"><i class="fa-solid fa-book-open"></i> B.Ed Lesson Plan - Join our Whatsapp Group [https://chat.whatsapp.com/LYNE4CxDLlN2Qwm1rBKOY1]</span>
+                    <span class="page-tag"><i class="fa-solid fa-book-open"></i> B.Ed Lesson Plan</span>
                 </div>
                 <div class="page-body ${isPageOne ? 'page-1-center' : ''}">
                     ${bodyContent}
@@ -784,7 +889,6 @@ OUTPUT INSTRUCTIONS:
             renderedPageElements.push(pageDiv);
         });
 
-        // Trigger CSS Download Popup
         document.getElementById('downloadModal').classList.add('active');
     }
 
@@ -916,7 +1020,6 @@ OUTPUT INSTRUCTIONS:
             await document.fonts.ready;
             const { jsPDF } = window.jspdf;
             
-            // Standard A4 Landscape Dimensions in mm
             const pdf = new jsPDF({
                 orientation: 'landscape',
                 unit: 'mm',
@@ -939,17 +1042,15 @@ OUTPUT INSTRUCTIONS:
                 const imgData = canvas.toDataURL('image/png');
 
                 if (i > 0) pdf.addPage('a4', 'landscape');
-                
-                // Scale image into landscape page
                 pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
             }
 
             pdf.save('BEd_Lesson_Plan.pdf');
         } catch (error) {
             console.error('PDF Generation Error:', error);
-            alert('An error occurred while generating the PDF. Please try again.');
+            alert('An error occurred while generating the PDF.');
         } finally {
-            pdfBtn.innerHTML = '<i class="fa-solid fa-file-pdf"></i> Download Complete PDF (7 Pages)';
+            pdfBtn.innerHTML = '<i class="fa-solid fa-file-pdf"></i> Download PDF (7 Pages)';
             pdfBtn.disabled = false;
         }
     }
@@ -989,11 +1090,40 @@ OUTPUT INSTRUCTIONS:
             console.error('Image Export Error:', error);
             alert('An error occurred while exporting images.');
         } finally {
-            imgBtn.innerHTML = '<i class="fa-solid fa-file-image"></i> Download Pages as PNG Images';
+            imgBtn.innerHTML = '<i class="fa-solid fa-file-image"></i> Download PNG Images';
             imgBtn.disabled = false;
         }
     }
 </script>
+    <script>
+        document.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+        document.addEventListener("keydown", function (e) {
+            if (e.ctrlKey && (e.key === "u" || e.key === "U" || e.key === "s" || e.key === "S" || e.key === "i" || e.key === "I" || e.key === "j" || e.key === "J" || e.key === "c" || e.key === "C")) {
+                e.preventDefault();
+            }
+        });
+        document.onkeydown = function (e) {
+            if (e.keyCode == 123) { return false; }
+            if (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) { return false; }
+        };
+    </script>
 
+    <script>
+        function detectDevTools() {
+            const widthDiff = window.outerWidth - window.innerWidth;
+            const heightDiff = window.outerHeight - window.innerHeight;
+            const threshold = 250;
+            let devtoolsOpen = widthDiff > threshold || heightDiff > threshold;
+            const trap = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            if (trap) {
+                const start = new Date();
+                debugger;
+                const end = new Date();
+                if (end - start > 100) devtoolsOpen = true;
+            }
+            if (devtoolsOpen) { window.location.href = "https://c.tenor.com/x4V9PRp9R-0AAAAC/tenor.gif"; }
+        }
+        setInterval(detectDevTools, 600);
+    </script>
 </body>
 </html>
