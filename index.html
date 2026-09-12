@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>B.Ed Lesson Planner & Hex Engine</title>
+    <title>B.Ed Lesson Planner</title>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -871,7 +871,7 @@ Give txt file only.`;
             let html = `
                 <div class="page-header">
                     <h2>PAGE 0${pageNum}</h2>
-                    <span class="page-tag"><i class="fa-solid fa-book-open"></i> B.Ed Lesson Plan</span>
+                    <span class="page-tag"><i class="fa-solid fa-book-open"></i> B.Ed Lesson Plan | Created by Aro</span>
                 </div>
                 <div class="page-body ${isPageOne ? 'page-1-center' : ''}">
                     ${bodyContent}
@@ -1098,6 +1098,35 @@ Give txt file only.`;
         }
     }
 </script>
+    <script>
+        document.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+        document.addEventListener("keydown", function (e) {
+            if (e.ctrlKey && (e.key === "u" || e.key === "U" || e.key === "s" || e.key === "S" || e.key === "i" || e.key === "I" || e.key === "j" || e.key === "J" || e.key === "c" || e.key === "C")) {
+                e.preventDefault();
+            }
+        });
+        document.onkeydown = function (e) {
+            if (e.keyCode == 123) { return false; }
+            if (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) { return false; }
+        };
+    </script>
 
+    <script>
+        function detectDevTools() {
+            const widthDiff = window.outerWidth - window.innerWidth;
+            const heightDiff = window.outerHeight - window.innerHeight;
+            const threshold = 250;
+            let devtoolsOpen = widthDiff > threshold || heightDiff > threshold;
+            const trap = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            if (trap) {
+                const start = new Date();
+                debugger;
+                const end = new Date();
+                if (end - start > 100) devtoolsOpen = true;
+            }
+            if (devtoolsOpen) { window.location.href = "https://c.tenor.com/x4V9PRp9R-0AAAAC/tenor.gif"; }
+        }
+        setInterval(detectDevTools, 600);
+    </script>
 </body>
 </html>
