@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>B.Ed Lesson Planner </title>
+    <title>B.Ed Lesson Planner & Hex Engine</title>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -226,22 +226,22 @@
             z-index: -9999;
         }
 
-       .landscape-page {
-    width: 1120px;
-    height: 630px; /* Standard 16:9 PDF Canvas Height */
-    background: #ffffff;
-    color: #0f172a;
-    border-radius: 16px;
-    padding: 24px 32px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid var(--border-color);
-    margin-bottom: 20px;
-}
+        .landscape-page {
+            width: 1120px;
+            height: 630px; /* 16:9 Aspect Ratio */
+            background: #ffffff;
+            color: #0f172a;
+            border-radius: 16px;
+            padding: 35px 45px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
 
         .page-header {
             border-bottom: 2px solid #e2e8f0;
@@ -270,25 +270,22 @@
         }
 
         .page-body {
-    flex: 1;
-    margin: 10px 0;
-    font-size: 0.82rem; /* Reduced to fit 7 pages cleanly */
-    line-height: 1.4;
-    color: #334155;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
+            flex: 1;
+            margin: 15px 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #334155;
+            overflow: hidden;
+        }
 
-       /* Page 1 Center Layout */
-.page-body.page-1-center {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    height: 100%;
-}
+        .page-body.page-1-center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            height: 100%;
+        }
 
         .page-1-center h1 {
             font-size: 1.8rem;
@@ -300,19 +297,18 @@
             padding-bottom: 6px;
         }
 
-      .meta-container-centered {
-    display: grid;
-    grid-template-columns: minmax(220px, auto) 1fr;
-    row-gap: 8px;
-    column-gap: 16px;
-    width: 100%;
-    max-width: 780px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    padding: 18px 24px;
-    border-radius: 12px;
-    text-align: left;
-}
+        .meta-container-centered {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 600px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 20px 25px;
+            border-radius: 14px;
+        }
+
         .meta-row {
             display: flex;
             justify-content: space-between;
@@ -330,19 +326,7 @@
             color: #0f172a;
             font-weight: 700;
         }
-.meta-label {
-    color: #0f172a;
-    font-weight: 700;
-    font-size: 0.88rem;
-    white-space: nowrap;
-}
 
-.meta-val {
-    color: #334155;
-    font-size: 0.88rem;
-    font-weight: 500;
-    word-break: break-word;
-}
         .subtopic-block {
             margin-bottom: 12px;
         }
@@ -377,39 +361,35 @@
             font-size: 0.88rem;
         }
 
-        /* Table Styling for Pages 4, 5, 6 */
-.lp-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-    height: auto;
-    max-height: 100%;
-}
+        .lp-table {
+            width: 100%;
+            border-collapse: collapse;
+            height: 100%;
+            table-layout: fixed;
+        }
 
-.lp-table th, .lp-table td {
-    border: 1px solid #cbd5e1;
-    padding: 6px 8px;
-    vertical-align: top;
-    font-size: 0.78rem;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    white-space: normal;
-}
+        .lp-table th, .lp-table td {
+            border: 1px solid #cbd5e1;
+            padding: 8px 10px;
+            vertical-align: top;
+            font-size: 0.82rem;
+            word-wrap: break-word;
+        }
 
-.lp-table th {
-    background: #f1f5f9;
-    color: #0f172a;
-    font-weight: 800;
-    text-align: left;
-    text-transform: uppercase;
-    font-size: 0.7rem;
-    letter-spacing: 0.5px;
-}
+        .lp-table th {
+            background: #f1f5f9;
+            color: #0f172a;
+            font-weight: 800;
+            text-align: left;
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            letter-spacing: 0.5px;
+        }
 
-.lp-table td:nth-child(1) { width: 20%; background: #f8fafc; font-weight: 700; color: #0f172a; }
-.lp-table td:nth-child(2) { width: 15%; background: #ffffff; color: var(--accent-primary); font-weight: 700; }
-.lp-table td:nth-child(3) { width: 45%; background: #ffffff; }
-.lp-table td:nth-child(4) { width: 20%; background: #f8fafc; color: #0f172a; font-weight: 600; }
+        .lp-table td:nth-child(1) { width: 20%; background: #f8fafc; font-weight: 700; color: #0f172a; }
+        .lp-table td:nth-child(2) { width: 16%; background: #ffffff; color: var(--accent-primary); font-weight: 700; }
+        .lp-table td:nth-child(3) { width: 44%; background: #ffffff; }
+        .lp-table td:nth-child(4) { width: 20%; background: #f8fafc; color: #0f172a; font-weight: 600; }
 
         .signature-footer {
             display: flex;
@@ -539,9 +519,8 @@
 <div class="main-container">
     <div class="header">
         <h1><i class="fa-solid fa-graduation-cap"></i> B.Ed Guru</h1>
-        <p>Mobile-Optimized  B.Ed Lesson Planner</p>
+        <p>Mobile-Optimized B.Ed Lesson Planner</p>
     </div>
-    <br/>
 
     <!-- Navigation Tabs -->
     <div class="tab-nav">
@@ -567,7 +546,7 @@
                 </div>
                 <div class="form-group">
                     <label><i class="fa-solid fa-school"></i> School Name *</label>
-                    <input type="text" id="schoolName" placeholder="e.g., Govt. Hr. Sec. School, Adyar" required>
+                    <input type="text" id="schoolName" placeholder="e.g., Govt. Hr. Sec. School" required>
                 </div>
                 <div class="form-group">
                     <label><i class="fa-solid fa-layer-group"></i> Standard / Class *</label>
@@ -595,15 +574,14 @@
                 </div>
                 <div class="form-group full-width">
                     <label><i class="fa-solid fa-list-check"></i> Content Ideas / Key Points *</label>
-                    <textarea id="contentIdeas" rows="3" placeholder="Ippa neenga Life Mathematics nu oru lesson teach pana poringa apdinaa.. athula ennana topics nadatha poringa.. (eg. Profit and Loss)"></textarea>
+                    <textarea id="contentIdeas" rows="3" placeholder="Enter key topics to cover in tables..." required></textarea>
                 </div>
             </div>
 
             <button type="submit" class="action-btn">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Generate
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Prompt
             </button>
-        </form>
-<br/>
+        </form><br/>
 <div class="quick-guide">
     <div class="guide-title">
         <i class="fa-solid fa-circle-info"></i> How to Use
@@ -611,7 +589,7 @@
     <div class="steps-wrapper">
         <div class="guide-step">
             <span class="step-num">1</span>
-            <p>Fill form & Click <strong>Generate </strong></p>
+            <p>Fill form & tap <strong>Generate Prompt</strong></p>
         </div>
         <div class="guide-step">
             <span class="step-num">2</span>
@@ -619,8 +597,9 @@
         </div>
         <div class="guide-step">
             <span class="step-num">3</span>
-            <p>Upload <strong>.txt</strong> in Step 2 to get <strong>PDF</strong></p>
+            <p>Upload <strong>.txt</strong> in Step 2 to get <strong>PDF / PNG</strong></p>
         </div>
+
          <div class="guide-step">
             <span class="step-num">4</span>
             <p>If any <strong>doubt, </strong> join <a href="https://chat.whatsapp.com/LYNE4CxDLlN2Qwm1rBKOY1" target="_blank" style="color: var(--accent-primary); font-weight: 700; text-decoration: none;">B.Ed Thagavalgal Group</p>
@@ -722,17 +701,14 @@
         </div>
         <h3>Lesson Plan Ready!</h3>
         <p>Your file is parsed. Select an option below to save your 7-page plan:</p>
- <p>B.Ed Lesson Planner can make mistakes. Check important info</p>
         
         <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
             <button class="chatgpt-btn" onclick="downloadAsPDF()" id="pdfBtn">
                 <i class="fa-solid fa-file-pdf"></i> Download PDF (7 Pages)
             </button>
-           
+            
         </div>
-
     </div>
-
 </div>
 
 <script>
@@ -848,7 +824,7 @@ OUTPUT INSTRUCTIONS:
         document.getElementById(modalId).classList.remove('active');
     }
 
-   function openChatGPTWithPrompt() {
+  function openChatGPTWithPrompt() {
     if (generatedHexPromptString) {
         const fullPrompt = generatedHexPromptString + " Give .txt file only";
         const targetUrl = `https://chatgpt.com/?q=${encodeURIComponent(fullPrompt)}`;
@@ -917,137 +893,112 @@ OUTPUT INSTRUCTIONS:
         document.getElementById('downloadModal').classList.add('active');
     }
 
-   function renderCenteredMetadataPage(text) {
-    const fields = [
-        "Name of the Student Teacher",
-        "Name of the Guide Teacher",
-        "Name of the School",
-        "Class",
-        "Subject",
-        "Topic",
-        "Duration",
-        "Date"
-    ];
-
-    let itemsHtml = '';
-    const keyRegex = new RegExp(`(${fields.join('|')}):`, 'gi');
-    const matches = [];
-    let match;
-
-    while ((match = keyRegex.exec(text)) !== null) {
-        matches.push({ key: match[1], index: match.index, length: match[0].length });
-    }
-
-    if (matches.length > 0) {
-        matches.forEach((m, idx) => {
-            const startVal = m.index + m.length;
-            const endVal = (idx + 1 < matches.length) ? matches[idx + 1].index : text.length;
-            const val = text.substring(startVal, endVal).trim().replace(/^[-*]\s*/, '');
-
-            itemsHtml += `
-                <div class="meta-label"><strong>${m.key}</strong></div>
-                <div class="meta-val">: ${val}</div>`;
-        });
-    } else {
-        text.split('\n').filter(l => l.includes(':')).forEach(line => {
-            const parts = line.split(':');
-            const key = parts[0].replace(/^[-*]\s*/, '').trim();
-            const val = parts.slice(1).join(':').trim();
-            if (key && val) {
-                itemsHtml += `
-                    <div class="meta-label"><strong>${key}</strong></div>
-                    <div class="meta-val">: ${val}</div>`;
-            }
-        });
-    }
-
-    return `
-        <h1 style="font-size: 1.5rem; margin-bottom: 14px; border-bottom: 3px solid var(--accent-primary); padding-bottom: 4px;">LESSON PLAN</h1>
-        <div class="meta-container-centered">
-            ${itemsHtml}
-        </div>
-    `;
-}
-
-function formatStructuredSections(text) {
-    const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-    let html = '';
-    let inList = false;
-
-    lines.forEach(line => {
-        if (line.match(/^(Instructional Objectives|Teaching Aids|Previous Knowledge|Motivation|Summaries|Summarises|Follow-up|Follow up):?/i)) {
-            if (inList) { html += '</ul></div>'; inList = false; }
-            const title = line.replace(':', '');
-            html += `<div class="subtopic-block" style="margin-bottom: 8px;"><strong class="subtopic-title" style="font-size: 0.88rem; color: #0f172a; display: block; margin-bottom: 4px;">${title}:</strong>`;
-        } 
-        else if (line.startsWith('-') || line.startsWith('*') || /^\d+\./.test(line)) {
-            if (!inList) { html += '<ul style="margin-left: 18px; margin-bottom: 6px;">'; inList = true; }
-            const cleanPoint = line.replace(/^[-*\d.]+\s*/, '');
-            html += `<li style="margin-bottom: 3px; font-size: 0.82rem;">${parseMarkdown(cleanPoint)}</li>`;
-        } 
-        else {
-            if (inList) { html += '</ul></div>'; inList = false; }
-            if (line.toLowerCase().startsWith('teacher:') || line.toLowerCase().startsWith('student:')) {
+    function renderCenteredMetadataPage(text) {
+        const lines = text.split('\n').filter(l => l.trim().length > 0);
+        let itemsHtml = '';
+        
+        lines.forEach(line => {
+            if(line.includes(':')) {
                 const parts = line.split(':');
-                html += `<div class="dialogue-box" style="background: #f8fafc; border-left: 3px solid var(--accent-primary); padding: 6px 10px; margin: 4px 0; font-size: 0.82rem;"><strong>${parts[0]}:</strong> ${parts.slice(1).join(':')}</div>`;
-            } else {
-                html += `<p style="margin-bottom: 4px; font-size: 0.82rem;">${parseMarkdown(line)}</p>`;
+                const key = parts[0].replace(/^[-*]\s*/, '').trim();
+                const val = parts.slice(1).join(':').trim();
+                itemsHtml += `
+                    <div class="meta-row">
+                        <span><strong>${key}</strong></span>
+                        <span>${val}</span>
+                    </div>`;
             }
-        }
-    });
+        });
 
-    if (inList) html += '</ul></div>';
-    return html;
-}
+        return `
+            <h1>LESSON PLAN</h1>
+            <div class="meta-container-centered">
+                ${itemsHtml}
+            </div>
+        `;
+    }
 
-function renderTablePage(text) {
-    const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-    let tableRows = '';
+    function formatStructuredSections(text) {
+        const lines = text.split('\n').filter(l => l.trim().length > 0);
+        let html = '';
+        let inList = false;
 
-    lines.forEach((line, index) => {
-        if (line.includes('|')) {
-            let cols = line.split('|').map(c => parseMarkdown(c.trim()));
-
-            if (cols.some(c => c.toLowerCase() === 'content' || c.toLowerCase() === 'specification')) return;
-            if (cols.length > 0 && cols[0] === '') cols.shift();
-
-            let content = '', spec = '', exp = '', evalCol = '';
-
-            if (cols.length >= 4) {
-                content = cols[0]; spec = cols[1]; exp = cols[2]; evalCol = cols[3];
-            } else if (cols.length === 3) {
-                content = cols[0]; spec = cols[1]; exp = cols[2]; evalCol = "Evaluate understanding.";
-            } else if (cols.length === 2) {
-                content = cols[0]; spec = "Explains"; exp = cols[1]; evalCol = "Check comprehension.";
+        lines.forEach(line => {
+            let trimmed = line.trim();
+            
+            if (trimmed.match(/^(Instructional Objectives|Teaching Aids|Previous Knowledge|Motivation|Summaries|Summarises|Follow-up|Follow up):?/i)) {
+                if (inList) { html += '</ul></div>'; inList = false; }
+                const title = trimmed.replace(':', '');
+                html += `<div class="subtopic-block"><strong class="subtopic-title">${title}:</strong>`;
+            } 
+            else if (trimmed.startsWith('-') || trimmed.startsWith('*') || /^\d+\./.test(trimmed)) {
+                if (!inList) { html += '<ul class="subtopic-list">'; inList = true; }
+                const cleanPoint = trimmed.replace(/^[-*\d.]+\s*/, '');
+                html += `<li>${parseMarkdown(cleanPoint)}</li>`;
+            } 
+            else {
+                if (inList) { html += '</ul></div>'; inList = false; }
+                if (trimmed.startsWith('Teacher:') || trimmed.startsWith('Student:')) {
+                    html += `<div class="dialogue-box"><strong>${trimmed.split(':')[0]}:</strong> ${trimmed.split(':').slice(1).join(':')}</div>`;
+                } else {
+                    html += `<p style="margin-bottom: 6px;">${parseMarkdown(trimmed)}</p>`;
+                }
             }
+        });
 
-            if (content || exp) {
-                tableRows += `<tr>
-                    <td>${content || `Topic ${index + 1}`}</td>
-                    <td>${spec || 'Solves'}</td>
-                    <td>${exp}</td>
-                    <td>${evalCol}</td>
-                </tr>`;
+        if (inList) html += '</ul></div>';
+        return html;
+    }
+
+    function renderTablePage(text) {
+        const lines = text.split('\n').filter(l => l.trim().length > 0);
+        let tableRows = '';
+
+        lines.forEach((line, index) => {
+            if (line.includes('|')) {
+                let cols = line.split('|').map(c => parseMarkdown(c.trim()));
+
+                if (cols.some(c => c.toLowerCase() === 'content' || c.toLowerCase() === 'specification')) return;
+                if (cols.length > 0 && cols[0] === '') cols.shift();
+
+                let content = '', spec = '', exp = '', evalCol = '';
+
+                if (cols.length >= 4) {
+                    content = cols[0]; spec = cols[1]; exp = cols[2]; evalCol = cols[3];
+                } else if (cols.length === 3) {
+                    content = cols[0]; spec = cols[1]; exp = cols[2];
+                    evalCol = "Evaluate understanding.";
+                } else if (cols.length === 2) {
+                    content = cols[0]; spec = "Explains"; exp = cols[1]; evalCol = "Check comprehension.";
+                }
+
+                if (content || exp) {
+                    tableRows += `<tr>
+                        <td>${content || `Topic ${index + 1}`}</td>
+                        <td>${spec || 'Solves'}</td>
+                        <td>${exp}</td>
+                        <td>${evalCol}</td>
+                    </tr>`;
+                }
             }
-        }
-    });
+        });
 
-    return `
-        <table class="lp-table">
-            <thead>
-                <tr>
-                    <th>CONTENT</th>
-                    <th>SPECIFICATION</th>
-                    <th>LEARNING EXPERIENCE</th>
-                    <th>EVALUATION</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${tableRows}
-            </tbody>
-        </table>
-    `;
-}
+        return `
+            <table class="lp-table">
+                <thead>
+                    <tr>
+                        <th>CONTENT</th>
+                        <th>SPECIFICATION</th>
+                        <th>LEARNING EXPERIENCE</th>
+                        <th>EVALUATION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tableRows}
+                </tbody>
+            </table>
+        `;
+    }
 
     function parseMarkdown(text) {
         return text
@@ -1145,35 +1096,6 @@ function renderTablePage(text) {
         }
     }
 </script>
-    <script>
-        document.addEventListener("contextmenu", function (e) { e.preventDefault(); });
-        document.addEventListener("keydown", function (e) {
-            if (e.ctrlKey && (e.key === "u" || e.key === "U" || e.key === "s" || e.key === "S" || e.key === "i" || e.key === "I" || e.key === "j" || e.key === "J" || e.key === "c" || e.key === "C")) {
-                e.preventDefault();
-            }
-        });
-        document.onkeydown = function (e) {
-            if (e.keyCode == 123) { return false; }
-            if (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) { return false; }
-        };
-    </script>
 
-    <script>
-        function detectDevTools() {
-            const widthDiff = window.outerWidth - window.innerWidth;
-            const heightDiff = window.outerHeight - window.innerHeight;
-            const threshold = 250;
-            let devtoolsOpen = widthDiff > threshold || heightDiff > threshold;
-            const trap = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-            if (trap) {
-                const start = new Date();
-                debugger;
-                const end = new Date();
-                if (end - start > 100) devtoolsOpen = true;
-            }
-            if (devtoolsOpen) { window.location.href = "https://c.tenor.com/x4V9PRp9R-0AAAAC/tenor.gif"; }
-        }
-        setInterval(detectDevTools, 600);
-    </script>
 </body>
 </html>
