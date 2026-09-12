@@ -8,16 +8,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- html2canvas & jsPDF for Image and PDF generation -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- html2canvas & jsPDF Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
     <style>
         :root {
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
             --border-color: #e2e8f0;
             --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            --accent-primary: #10a37f; /* ChatGPT Emerald */
+            --accent-primary: #10a37f;
             --accent-primary-hover: #0e8e6d;
             --text-main: #0f172a;
             --text-muted: #64748b;
@@ -192,22 +194,24 @@
             border-color: var(--accent-primary);
         }
 
-        .presentation-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
-            align-items: center;
-            margin-top: 35px;
+        /* HIDDEN OFF-SCREEN CANVAS STAGING AREA */
+        #offscreenStage {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1120px;
+            pointer-events: none;
+            opacity: 0;
+            z-index: -9999;
         }
 
         .landscape-page {
-            width: 100%;
-            aspect-ratio: 16 / 9;
+            width: 1120px;
+            height: 630px; /* Exact 16:9 Aspect Ratio */
             background: #ffffff;
             color: #0f172a;
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            padding: 40px 50px;
+            padding: 35px 45px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
@@ -215,18 +219,19 @@
             position: relative;
             overflow: hidden;
             border: 1px solid var(--border-color);
+            margin-bottom: 20px;
         }
 
         .page-header {
             border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 12px;
+            padding-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .page-header h2 {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             color: #0f172a;
             font-weight: 800;
             text-transform: uppercase;
@@ -235,7 +240,7 @@
 
         .page-tag {
             background: #f1f5f9;
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 800;
@@ -245,11 +250,11 @@
 
         .page-body {
             flex: 1;
-            margin: 20px 0;
-            font-size: 0.95rem;
-            line-height: 1.6;
+            margin: 15px 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
             color: #334155;
-            overflow-y: auto;
+            overflow: hidden;
         }
 
         .page-body.page-1-center {
@@ -262,9 +267,9 @@
         }
 
         .page-1-center h1 {
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: #0f172a;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             font-weight: 800;
             text-transform: uppercase;
             border-bottom: 3px solid var(--accent-primary);
@@ -274,21 +279,21 @@
         .meta-container-centered {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             width: 100%;
-            max-width: 650px;
+            max-width: 600px;
             background: #f8fafc;
             border: 1px solid #e2e8f0;
-            padding: 24px 30px;
+            padding: 20px 25px;
             border-radius: 14px;
         }
 
         .meta-row {
             display: flex;
             justify-content: space-between;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             border-bottom: 1px dashed #e2e8f0;
-            padding-bottom: 8px;
+            padding-bottom: 6px;
         }
 
         .meta-row:last-child {
@@ -301,41 +306,38 @@
             font-weight: 700;
         }
 
-        /* Sub-Topic Styling */
         .subtopic-block {
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .subtopic-title {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 800;
             color: #0f172a;
-            margin-top: 10px;
-            margin-bottom: 6px;
+            margin-top: 6px;
+            margin-bottom: 4px;
             display: block;
         }
 
         .subtopic-list {
             margin-left: 20px;
-            margin-bottom: 10px;
-            padding-left: 0;
+            margin-bottom: 8px;
             list-style-type: disc;
         }
 
         .subtopic-list li {
-            font-size: 0.92rem;
+            font-size: 0.88rem;
             color: #334155;
-            margin-bottom: 4px;
-            line-height: 1.5;
+            margin-bottom: 3px;
         }
 
         .dialogue-box {
             background: #f8fafc;
             border-left: 4px solid var(--accent-primary);
-            padding: 14px 18px;
-            border-radius: 8px;
-            margin: 10px 0;
-            line-height: 1.7;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin: 8px 0;
+            font-size: 0.88rem;
         }
 
         .lp-table {
@@ -347,9 +349,9 @@
 
         .lp-table th, .lp-table td {
             border: 1px solid #cbd5e1;
-            padding: 10px 12px;
+            padding: 8px 10px;
             vertical-align: top;
-            font-size: 0.88rem;
+            font-size: 0.82rem;
             word-wrap: break-word;
         }
 
@@ -359,7 +361,7 @@
             font-weight: 800;
             text-align: left;
             text-transform: uppercase;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             letter-spacing: 0.5px;
         }
 
@@ -371,15 +373,14 @@
         .signature-footer {
             display: flex;
             justify-content: space-between;
-            padding-top: 14px;
+            padding-top: 10px;
             border-top: 2px dashed #cbd5e1;
             font-weight: 800;
-            font-size: 0.88rem;
+            font-size: 0.82rem;
             color: #0f172a;
-            margin-top: 10px;
         }
 
-        /* POPUP CSS MODAL */
+        /* POPUP MODALS */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -408,7 +409,7 @@
             border-radius: 20px;
             padding: 30px;
             width: 90%;
-            max-width: 440px;
+            max-width: 460px;
             text-align: center;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             position: relative;
@@ -463,6 +464,11 @@
             background: var(--accent-primary-hover);
         }
 
+        .chatgpt-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .close-modal-btn {
             position: absolute;
             top: 14px;
@@ -479,15 +485,6 @@
         }
 
         .hidden { display: none !important; }
-
-        @media (max-width: 900px) {
-            .landscape-page {
-                aspect-ratio: auto;
-                min-height: 550px;
-                padding: 24px 18px;
-            }
-            .main-container { padding: 24px 16px; }
-        }
     </style>
 </head>
 <body>
@@ -495,13 +492,14 @@
 <div class="main-container">
     <div class="header">
         <h1><i class="fa-solid fa-graduation-cap"></i> B.Ed Lesson Planner</h1>
-        <p>Enforced Machine Prompting & 16:9 Presentation Renderer</p>
+        <p>Enforced Machine Prompting & Export Engine</p>
     </div>
 
     <!-- Navigation Tabs -->
     <div class="tab-nav">
         <button class="tab-btn active" id="tab1-btn" onclick="switchTab('tab1')">
-            <i class="fa-solid fa-pen-to-square"></i> Step 1        </button>
+            <i class="fa-solid fa-pen-to-square"></i> Step 1
+        </button>
         <button class="tab-btn" id="tab2-btn" onclick="switchTab('tab2')">
             <i class="fa-solid fa-file-arrow-up"></i> Step 2
         </button>
@@ -554,49 +552,62 @@
             </div>
 
             <button type="submit" class="action-btn">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Generate
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Prompt
             </button>
         </form>
     </div>
 
-    <!-- TAB 2: HEX DECODER & PRESENTATION VIEWER -->
+    <!-- TAB 2: HEX DECODER & FILE UPLOAD -->
     <div id="tab2-content" class="hidden">
         <div class="upload-dropzone" onclick="document.getElementById('fileInput').click()">
             <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2.2rem; color: var(--accent-primary); margin-bottom: 10px;"></i>
             <h3>Upload ChatGPT (.txt file)</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Or drag & drop the saved text file here</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Select or drop the generated text file here</p>
             <input type="file" id="fileInput" accept=".txt" class="hidden" onchange="handleFileUpload(event)">
-        </div>
-
-        <div class="form-group">
-          
-            
-          
-        </div>
-
-        <div id="presentationArea" class="presentation-wrapper hidden">
-            <!-- Rendered Pages will appear here -->
         </div>
     </div>
 </div>
 
-<!-- SUCCESS MODAL FOR CHATGPT -->
+<!-- OFF-SCREEN RENDERING STAGE -->
+<div id="offscreenStage"></div>
+
+<!-- SUCCESS MODAL FOR PROMPT GENERATION -->
 <div class="modal-overlay" id="successModal">
     <div class="modal-card">
-        <button class="close-modal-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+        <button class="close-modal-btn" onclick="closeModal('successModal')"><i class="fa-solid fa-xmark"></i></button>
         <div class="modal-icon">
             <i class="fa-solid fa-check"></i>
         </div>
         <h3>Prompt Generated!</h3>
-        <p>Click below to launch <strong>ChatGPT</strong> directly with your prompt prefilled in the chat box.</p>
+        <p>Click below to launch <strong>ChatGPT</strong> directly with your prompt prefilled.</p>
         <button class="chatgpt-btn" onclick="openChatGPTWithPrompt()">
-            <i class="fa-solid fa-arrow-up-right-from-square"></i> Launch ChatGPT with Prefilled Prompt
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Launch ChatGPT
         </button>
+    </div>
+</div>
+
+<!-- DOWNLOAD MODAL FOR RENDERED LESSON PLAN -->
+<div class="modal-overlay" id="downloadModal">
+    <div class="modal-card">
+        <button class="close-modal-btn" onclick="closeModal('downloadModal')"><i class="fa-solid fa-xmark"></i></button>
+        <div class="modal-icon">
+            <i class="fa-solid fa-file-pdf"></i>
+        </div>
+        <h3>Lesson Plan Decoded!</h3>
+        <p>Your lesson plan is processed. Choose your preferred format to save:</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+            <button class="chatgpt-btn" onclick="downloadAsPDF()" id="pdfBtn">
+                <i class="fa-solid fa-file-pdf"></i> Download Complete PDF (7 Pages)
+            </button>
+          
+        </div>
     </div>
 </div>
 
 <script>
     let generatedHexPromptString = '';
+    let renderedPageElements = [];
 
     function switchTab(tabId) {
         if(tabId === 'tab1') {
@@ -612,13 +623,20 @@
         }
     }
 
-function stringToHex(str) {
-    const encoder = new TextEncoder();
-    const bytes = encoder.encode(str);
-    return Array.from(bytes)
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
-}
+    function stringToHex(str) {
+        const encoder = new TextEncoder();
+        const bytes = encoder.encode(str);
+        return Array.from(bytes)
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
+    }
+
+    function hexToString(hex) {
+        hex = hex.replace(/```[a-z]*|```/gi, '').replace(/[^0-9a-fA-F]/g, '');
+        const bytes = new Uint8Array(hex.match(/.{1,2}/g)?.map(byte => parseInt(byte, 16)) || []);
+        const decoder = new TextDecoder('utf-8');
+        return decoder.decode(bytes);
+    }
 
     function generateHexPrompt(e) {
         e.preventDefault();
@@ -692,39 +710,22 @@ OUTPUT INSTRUCTIONS:
 
         generatedHexPromptString = stringToHex(rawPrompt);
         
-        // Also copy to clipboard as a safety backup
-        navigator.clipboard.writeText(generatedHexPromptString).catch(err => {
-            console.warn('Clipboard write deferred to button click.');
-        });
-
+        navigator.clipboard.writeText(generatedHexPromptString).catch(() => {});
         document.getElementById('successModal').classList.add('active');
     }
 
-    function closeModal() {
-        document.getElementById('successModal').classList.remove('active');
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
     }
 
     function openChatGPTWithPrompt() {
         if (generatedHexPromptString) {
-            // Encode the Hex prompt into the URL parameter so ChatGPT pre-loads it automatically
             const targetUrl = `https://chatgpt.com/?q=${encodeURIComponent(generatedHexPromptString)}`;
             window.open(targetUrl, '_blank');
-            closeModal();
+            closeModal('successModal');
         }
     }
 
-// Correctly decodes Hex back to UTF-8 without garbled characters (â≡≡)
-function hexToString(hex) {
-    // 1. Strip out markdown code fences (```) and non-hex characters
-    hex = hex.replace(/```[a-z]*|```/gi, '').replace(/[^0-9a-fA-F]/g, '');
-    
-    // 2. Convert hex string into Uint8Array byte array
-    const bytes = new Uint8Array(hex.match(/.{1,2}/g)?.map(byte => parseInt(byte, 16)) || []);
-    
-    // 3. Decode bytes using UTF-8 TextDecoder
-    const decoder = new TextDecoder('utf-8');
-    return decoder.decode(bytes);
-}
     function handleFileUpload(e) {
         const file = e.target.files[0];
         if (!file) return;
@@ -735,16 +736,10 @@ function hexToString(hex) {
         reader.readAsText(file);
     }
 
-    function decodeManualHex() {
-        const hex = document.getElementById('manualHexInput').value;
-        if (!hex) return alert('Please paste output text first!');
-        renderLessonPlanPages(hexToString(hex));
-    }
-
     function renderLessonPlanPages(decodedText) {
-        const container = document.getElementById('presentationArea');
+        const container = document.getElementById('offscreenStage');
         container.innerHTML = '';
-        container.classList.remove('hidden');
+        renderedPageElements = [];
 
         let pagesRaw = decodedText.split(/PAGE\s+0[1-7]:?/i).filter(p => p.trim().length > 0);
         if (pagesRaw.length === 0) pagesRaw = [decodedText];
@@ -768,7 +763,7 @@ function hexToString(hex) {
             let html = `
                 <div class="page-header">
                     <h2>PAGE 0${pageNum}</h2>
-                    <span class="page-tag"><i class="fa-solid fa-book-open"></i> B.Ed Lesson Plan</span>
+                    <span class="page-tag"><i class="fa-solid fa-book-open"></i> B.Ed Lesson Plan - Join our Whatsapp Group [https://chat.whatsapp.com/LYNE4CxDLlN2Qwm1rBKOY1]</span>
                 </div>
                 <div class="page-body ${isPageOne ? 'page-1-center' : ''}">
                     ${bodyContent}
@@ -786,7 +781,11 @@ function hexToString(hex) {
 
             pageDiv.innerHTML = html;
             container.appendChild(pageDiv);
+            renderedPageElements.push(pageDiv);
         });
+
+        // Trigger CSS Download Popup
+        document.getElementById('downloadModal').classList.add('active');
     }
 
     function renderCenteredMetadataPage(text) {
@@ -837,7 +836,7 @@ function hexToString(hex) {
                 if (trimmed.startsWith('Teacher:') || trimmed.startsWith('Student:')) {
                     html += `<div class="dialogue-box"><strong>${trimmed.split(':')[0]}:</strong> ${trimmed.split(':').slice(1).join(':')}</div>`;
                 } else {
-                    html += `<p style="margin-bottom: 8px;">${parseMarkdown(trimmed)}</p>`;
+                    html += `<p style="margin-bottom: 6px;">${parseMarkdown(trimmed)}</p>`;
                 }
             }
         });
@@ -863,9 +862,9 @@ function hexToString(hex) {
                     content = cols[0]; spec = cols[1]; exp = cols[2]; evalCol = cols[3];
                 } else if (cols.length === 3) {
                     content = cols[0]; spec = cols[1]; exp = cols[2];
-                    evalCol = content.toLowerCase().includes('profit') ? "Find Profit % if CP = Rs. 300, SP = Rs. 360." : `Solve a practical question on ${content}.`;
+                    evalCol = "Evaluate understanding.";
                 } else if (cols.length === 2) {
-                    content = cols[0]; spec = "Explains / Solves"; exp = cols[1]; evalCol = "Assess student understanding.";
+                    content = cols[0]; spec = "Explains"; exp = cols[1]; evalCol = "Check comprehension.";
                 }
 
                 if (content || exp) {
@@ -902,150 +901,99 @@ function hexToString(hex) {
             .replace(/\*(.*?)\*/g, '<em>$1</em>');
     }
 
-
-    let renderedPageElements = [];
-
-function renderLessonPlanPages(decodedText) {
-    // Hidden container off-screen to render DOM nodes for canvas capture
-    let container = document.getElementById('presentationArea');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'presentationArea';
-        document.body.appendChild(container);
-    }
-    
-    // Position off-screen so rendering occurs cleanly in the background
-    container.style.position = 'absolute';
-    container.style.left = '-9999px';
-    container.style.top = '-9999px';
-    container.style.width = '1200px'; 
-    container.innerHTML = '';
-
-    let pagesRaw = decodedText.split(/PAGE\s+0[1-7]:?/i).filter(p => p.trim().length > 0);
-    if (pagesRaw.length === 0) pagesRaw = [decodedText];
-
-    renderedPageElements = [];
-
-    pagesRaw.forEach((pageContent, idx) => {
-        const pageNum = idx + 1;
-        const pageDiv = document.createElement('div');
-        pageDiv.className = 'landscape-page';
-        pageDiv.style.width = '1200px';
-        pageDiv.style.marginBottom = '20px';
-
-        let bodyContent = '';
-        let isPageOne = (pageNum === 1);
-
-        if (pageNum >= 4 && pageNum <= 6) {
-            bodyContent = renderTablePage(pageContent);
-        } else if (isPageOne) {
-            bodyContent = renderCenteredMetadataPage(pageContent);
-        } else {
-            bodyContent = formatStructuredSections(pageContent);
+    /* PDF EXPORT FUNCTION */
+    async function downloadAsPDF() {
+        if (renderedPageElements.length === 0) {
+            alert('No lesson plan data found. Please upload a file first.');
+            return;
         }
 
-        let html = `
-            <div class="page-header">
-                <h2>PAGE 0${pageNum}</h2>
-                <span class="page-tag"><i class="fa-solid fa-book-open"></i> B.Ed Lesson Plan</span>
-            </div>
-            <div class="page-body ${isPageOne ? 'page-1-center' : ''}">
-                ${bodyContent}
-            </div>
-        `;
+        const pdfBtn = document.getElementById('pdfBtn');
+        pdfBtn.innerText = 'Generating PDF...';
+        pdfBtn.disabled = true;
 
-        if (pageNum === 7 || idx === pagesRaw.length - 1) {
-            html += `
-                <div class="signature-footer">
-                    <span><i class="fa-solid fa-pen-fancy"></i> Signature of Student Teacher</span>
-                    <span><i class="fa-solid fa-pen-nib"></i> Signature of Guide Teacher</span>
-                </div>
-            `;
+        try {
+            await document.fonts.ready;
+            const { jsPDF } = window.jspdf;
+            
+            // Standard A4 Landscape Dimensions in mm
+            const pdf = new jsPDF({
+                orientation: 'landscape',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const pdfWidth = pdf.internal.pageSize.getWidth();   // ~297mm
+            const pdfHeight = pdf.internal.pageSize.getHeight(); // ~210mm
+
+            for (let i = 0; i < renderedPageElements.length; i++) {
+                const elem = renderedPageElements[i];
+                
+                const canvas = await html2canvas(elem, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff'
+                });
+
+                const imgData = canvas.toDataURL('image/png');
+
+                if (i > 0) pdf.addPage('a4', 'landscape');
+                
+                // Scale image into landscape page
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            }
+
+            pdf.save('BEd_Lesson_Plan.pdf');
+        } catch (error) {
+            console.error('PDF Generation Error:', error);
+            alert('An error occurred while generating the PDF. Please try again.');
+        } finally {
+            pdfBtn.innerHTML = '<i class="fa-solid fa-file-pdf"></i> Download Complete PDF (7 Pages)';
+            pdfBtn.disabled = false;
+        }
+    }
+
+    /* IMAGE EXPORT FUNCTION */
+    async function downloadAsImages() {
+        if (renderedPageElements.length === 0) {
+            alert('No lesson plan data found. Please upload a file first.');
+            return;
         }
 
-        pageDiv.innerHTML = html;
-        container.appendChild(pageDiv);
-        renderedPageElements.push(pageDiv);
-    });
+        const imgBtn = document.getElementById('imgBtn');
+        imgBtn.innerText = 'Exporting Images...';
+        imgBtn.disabled = true;
 
-    // Show download modal instead of displaying pages inline
-    document.getElementById('downloadModal').classList.add('active');
-}
+        try {
+            await document.fonts.ready;
 
-function closeDownloadModal() {
-    document.getElementById('downloadModal').classList.remove('active');
-}
+            for (let i = 0; i < renderedPageElements.length; i++) {
+                const elem = renderedPageElements[i];
+                
+                const canvas = await html2canvas(elem, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff'
+                });
 
-// Download as ordered multi-page PDF (16:9 Landscape)
-async function downloadAsPDF() {
-    const pdfBtn = document.getElementById('pdfBtn');
-    pdfBtn.innerText = 'Generating PDF...';
-    pdfBtn.disabled = true;
+                const link = document.createElement('a');
+                link.download = `Lesson_Plan_Page_0${i + 1}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
 
-    const { jsPDF } = window.jspdf;
-    // 16:9 aspect ratio dimensions in mm (297mm x 167mm)
-    const pdf = new jsPDF({
-        orientation: 'landscape',
-        unit: 'mm',
-        format: [297, 167]
-    });
-
-    for (let i = 0; i < renderedPageElements.length; i++) {
-        const elem = renderedPageElements[i];
-        const canvas = await html2canvas(elem, { scale: 2, logging: false });
-        const imgData = canvas.toDataURL('image/png');
-
-        if (i > 0) pdf.addPage([297, 167], 'landscape');
-        pdf.addImage(imgData, 'PNG', 0, 0, 297, 167);
+                await new Promise(r => setTimeout(r, 300));
+            }
+        } catch (error) {
+            console.error('Image Export Error:', error);
+            alert('An error occurred while exporting images.');
+        } finally {
+            imgBtn.innerHTML = '<i class="fa-solid fa-file-image"></i> Download Pages as PNG Images';
+            imgBtn.disabled = false;
+        }
     }
-
-    pdf.save('BEd_Lesson_Plan.pdf');
-    pdfBtn.innerHTML = '<i class="fa-solid fa-file-pdf"></i> Download Complete PDF (7 Pages)';
-    pdfBtn.disabled = false;
-}
-
-// Download each page individually as PNG images
-async function downloadAsImages() {
-    const imgBtn = document.getElementById('imgBtn');
-    imgBtn.innerText = 'Exporting Images...';
-    imgBtn.disabled = true;
-
-    for (let i = 0; i < renderedPageElements.length; i++) {
-        const elem = renderedPageElements[i];
-        const canvas = await html2canvas(elem, { scale: 2, logging: false });
-        
-        const link = document.createElement('a');
-        link.download = `Lesson_Plan_Page_0${i + 1}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-        
-        // Brief delay between downloads
-        await new Promise(r => setTimeout(r, 300));
-    }
-
-    imgBtn.innerHTML = '<i class="fa-solid fa-file-image"></i> Download Pages as Images (PNG)';
-    imgBtn.disabled = false;
-}
 </script>
-<!-- DOWNLOAD MODAL FOR RENDERED LESSON PLAN -->
-<div class="modal-overlay" id="downloadModal">
-    <div class="modal-card" style="max-width: 500px;">
-        <button class="close-modal-btn" onclick="closeDownloadModal()"><i class="fa-solid fa-xmark"></i></button>
-        <div class="modal-icon">
-            <i class="fa-solid fa-file-pdf"></i>
-        </div>
-        <h3>Lesson Plan Decoded!</h3>
-        <p>Your lesson plan has been successfully processed. Choose your preferred export format below:</p>
-        
-        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
-            <button class="chatgpt-btn" onclick="downloadAsPDF()" id="pdfBtn">
-                <i class="fa-solid fa-file-pdf"></i> Download Complete PDF (7 Pages)
-            </button>
-            <button class="chatgpt-btn" onclick="downloadAsImages()" id="imgBtn" style="background: #0f172a;">
-                <i class="fa-solid fa-file-image"></i> Download Pages as Images (PNG)
-            </button>
-        </div>
-    </div>
-</div>
+
 </body>
 </html>
