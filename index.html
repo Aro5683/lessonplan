@@ -779,22 +779,31 @@ function generateHexPrompt(e) {
         return;
     }
 
-    // Auto-fill missing topics up to 6 total items
-    let filledTopics = [...rawTopics];
-    if (filledTopics.length < 6) {
-        const remainingCount = 6 - filledTopics.length;
-        for (let i = 1; i <= remainingCount; i++) {
-            filledTopics.push(`Core Concept ${filledTopics.length + 1} of ${topic}`);
+   // Auto-fill missing topics up to 6 total items
+let filledTopics = [...rawTopics];
+if (filledTopics.length < 6) {
+    const remainingCount = 6 - filledTopics.length;
+    for (let i = 1; i <= remainingCount; i++) {
+        // Alternates between Core Concept and Example for missing topics
+        if (i % 2 !== 0) {
+            filledTopics.push(`Core Concept of ${topic}`);
+        } else {
+            filledTopics.push(`Example for ${topic}`);
         }
     }
 
+
     const formattedContentIdeas = filledTopics.map((item, index) => `${index + 1}. ${item}`).join(', ');
 
-    const rawPrompt = `Act as an expert B.Ed Teacher Educator. Generate a concise 7-page Lesson Plan for ${standard} ${subject} on the topic "${topic}" formatted strictly for a B.Ed practical record notebook.
+   const rawPrompt = `Act as an expert B.Ed Teacher Educator. Generate a concise 7-page Lesson Plan for ${standard} ${subject} on the topic "${topic}" formatted strictly for a B.Ed practical record notebook.
 
 STRICT SPECIFICATION VERB BANK:
-The SPECIFICATION column in Pages 04, 05, and 06 MUST ONLY use term from this exact allowed list:
+The SPECIFICATION column in Pages 04, 05, and 06 MUST ONLY use terms from this exact allowed list:
 [Introducing, Motivation, Explaining, Classification, Demonstration, Observation, Generalisation, Comparison, Application, Recalls, Recognize, Accurate Knowledge, Define, Listout, Analysis, Synthesis, Find Relationship, Differentiate, Give Examples, Reason, Calculate]
+
+STRICT LAYOUT & CONTENT CONSTRAINTS:
+1. Do NOT introduce any extra headings, subheadings, conclusions, or extra-curricular details outside the requested sections.
+2. Follow the exact page structures provided below without adding preamble or conversational text.
 
 STRICT 4-COLUMN LAYOUT RULES FOR PAGES 04, 05, AND 06:
 Every single row in Pages 04, 05, and 06 MUST contain EXACTLY FOUR pipe-separated parts:
@@ -820,24 +829,27 @@ Date: ${date}
 
 PAGE 02: 
 Instructional Objectives:
-Generate EXACTLY 6 instructional objectives, directly corresponding to the 6 content topics below (1 objective per content topic, starting with an action verb):
-- Objective for Content 1 (${filledTopics[0]})
-- Objective for Content 2 (${filledTopics[1]})
-- Objective for Content 3 (${filledTopics[2]})
-- Objective for Content 4 (${filledTopics[3]})
-- Objective for Content 5 (${filledTopics[4]})
-- Objective for Content 6 (${filledTopics[5]})
+Generate EXACTLY 6 instructional objectives directly corresponding to the 6 content topics below (1 objective per topic). Each objective MUST start directly with a strong action verb (e.g., "Identify...", "Explain...", "Classify..."). Do NOT include labels like "Objective for" or brackets:
+- Objective for topic 1: ${filledTopics[0]}
+- Objective for topic 2: ${filledTopics[1]}
+- Objective for topic 3: ${filledTopics[2]}
+- Objective for topic 4: ${filledTopics[3]}
+- Objective for topic 5: ${filledTopics[4]}
+- Objective for topic 6: ${filledTopics[5]}
 
 Teaching Aids:
 - ${teachingAids}
 
 Previous Knowledge:
-- Previous Knowledge of Learners: Students already have basic knowledge about ${topic}. 
-- Followed by 3 quick entry questions asked by the teacher.
+- Students already have basic knowledge about ${topic}.
+- [Question 1: Very simple entry question related to real life]
+- [Question 2: Very simple entry question related to daily tech use]
+- [Question 3: Very simple entry question leading into the lesson]
+(CRITICAL: Do NOT write or print the phrase "Followed by 3 quick entry questions asked by the teacher" in the output. Simply list the knowledge line and the 3 simple questions directly.)
 
 PAGE 03: Motivation 
 Generate a very simple, natural, and easy-to-understand 5-6 line dialogue exchange between Teacher and Student that effortlessly leads to the topic "${topic}".
-Format:
+Format strictly:
 Teacher: [Simple entry question]
 Student: [Simple response]
 Teacher: [Follow-up question bridging real life to the topic]
@@ -862,7 +874,6 @@ OUTPUT INSTRUCTIONS:
 1. Do NOT generate any PDF document or PYTHON code.
 2. Convert the entire generated text strictly into Hexadecimal string data.
 3. Output ONLY a single downloadable .txt file containing the raw hex code string.`;
-
     generatedHexPromptString = stringToHex(rawPrompt);
     
     navigator.clipboard.writeText(generatedHexPromptString).catch(() => {});
@@ -916,7 +927,7 @@ OUTPUT INSTRUCTIONS:
             let html = `
                 <div class="page-header">
                     <h2>PAGE 0${pageNum}</h2>
-                    <span class="page-tag"><i class="fa-solid fa-book-open"></i> B.Ed Lesson Plan | Created by Aro</span>
+                    <span class="page-tag"><i class="fa-solid fa-book-open"></i> B.Ed Lesson Plan | Created by B.Ed Guru</span>
                 </div>
                 <div class="page-body ${isPageOne ? 'page-1-center' : ''}">
                     ${bodyContent}
