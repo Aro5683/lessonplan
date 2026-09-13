@@ -557,7 +557,7 @@
                     <input type="text" id="subject" placeholder="e.g., Mathematics" required>
                 </div>
                 <div class="form-group">
-                    <label><i class="fa-solid fa-lightbulb"></i> Topic Name *</label>
+                    <label><i class="fa-solid fa-lightbulb"></i> Lesson Name *</label>
                     <input type="text" id="topic" placeholder="e.g., Life Mathematics - Profit & Loss" required>
                 </div>
                 <div class="form-group">
@@ -572,9 +572,18 @@
                     <label><i class="fa-solid fa-toolbox"></i> Teaching Aids *</label>
                     <input type="text" id="teachingAids" placeholder="e.g., Chart, Flashcards, Blackboard" required>
                 </div>
-                <div class="form-group full-width">
-                    <label><i class="fa-solid fa-list-check"></i> Content Ideas / Key Points *</label>
-                    <textarea id="contentIdeas" rows="3" placeholder="Ippa neenga Life Mathematics nu oru Lesson Teach panna poring apdinaa.. athula ennana topic neenga teach panninga (eg. Profit and loss)" required></textarea>
+                
+                    <div class="form-group full-width">
+    <label><i class="fa-solid fa-list-check"></i> 6 Main Content Topics / Ideas *</label>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-top: 6px;">
+        <input type="text" class="content-topic" id="content1" placeholder="e.g., Uses of OS">
+        <input type="text" class="content-topic" id="content2" placeholder="e.g., Structure of Program">
+        <input type="text" class="content-topic" id="content3" placeholder="e.g., Significance of OS">
+        <input type="text" class="content-topic" id="content4" placeholder="e.g., Functions of OS">
+        <input type="text" class="content-topic" id="content5" placeholder="e.g., Types of OS">
+        <input type="text" class="content-topic" id="content6" placeholder="e.g., OS Architecture">
+   
+</div>
                 </div>
             </div>
 
@@ -745,29 +754,57 @@
         return decoder.decode(bytes);
     }
 
-    function generateHexPrompt(e) {
-        e.preventDefault();
-        const studentName = document.getElementById('studentName').value;
-        const guideName = document.getElementById('guideName').value;
-        const schoolName = document.getElementById('schoolName').value;
-        const standard = document.getElementById('standard').value;
-        const subject = document.getElementById('subject').value;
-        const topic = document.getElementById('topic').value;
-        const date = document.getElementById('date').value;
-        const teachingAids = document.getElementById('teachingAids').value;
-        const contentIdeas = document.getElementById('contentIdeas').value;
+function generateHexPrompt(e) {
+    e.preventDefault();
+    const studentName = document.getElementById('studentName').value;
+    const guideName = document.getElementById('guideName').value;
+    const schoolName = document.getElementById('schoolName').value;
+    const standard = document.getElementById('standard').value;
+    const subject = document.getElementById('subject').value;
+    const topic = document.getElementById('topic').value;
+    const date = document.getElementById('date').value;
+    const teachingAids = document.getElementById('teachingAids').value;
 
-        const rawPrompt = `Act as an expert B.Ed Teacher Educator. Generate a concise 7-page Lesson Plan for ${standard} ${subject} on the topic "${topic}" formatted strictly for a B.Ed practical record notebook.
+    // 1. Collect user inputs for content topics
+    let rawTopics = [];
+    for (let i = 1; i <= 6; i++) {
+        const val = document.getElementById(`content${i}`).value.trim();
+        if (val !== '') {
+            rawTopics.push(val);
+        }
+    }
+
+    if (rawTopics.length === 0) {
+        alert("Please fill in at least 1 content topic!");
+        return;
+    }
+
+    // Auto-fill missing topics up to 6 total items
+    let filledTopics = [...rawTopics];
+    if (filledTopics.length < 6) {
+        const remainingCount = 6 - filledTopics.length;
+        for (let i = 1; i <= remainingCount; i++) {
+            filledTopics.push(`Core Concept ${filledTopics.length + 1} of ${topic}`);
+        }
+    }
+
+    const formattedContentIdeas = filledTopics.map((item, index) => `${index + 1}. ${item}`).join(', ');
+
+    const rawPrompt = `Act as an expert B.Ed Teacher Educator. Generate a concise 7-page Lesson Plan for ${standard} ${subject} on the topic "${topic}" formatted strictly for a B.Ed practical record notebook.
+
+STRICT SPECIFICATION VERB BANK:
+The SPECIFICATION column in Pages 04, 05, and 06 MUST ONLY use term from this exact allowed list:
+[Introducing, Motivation, Explaining, Classification, Demonstration, Observation, Generalisation, Comparison, Application, Recalls, Recognize, Accurate Knowledge, Define, Listout, Analysis, Synthesis, Find Relationship, Differentiate, Give Examples, Reason, Calculate]
 
 STRICT 4-COLUMN LAYOUT RULES FOR PAGES 04, 05, AND 06:
 Every single row in Pages 04, 05, and 06 MUST contain EXACTLY FOUR pipe-separated parts:
 CONTENT | SPECIFICATION | LEARNING EXPERIENCE | EVALUATION
 
 Do NOT skip any column!
-- CONTENT: Subheading or Topic Name (e.g., "Example 1 (Profit)")
-- SPECIFICATION: Single action verb (e.g., "Solves", "Explains", "Defines")
-- LEARNING EXPERIENCE: Full explanation, step-by-step teacher working, and calculations.
-- EVALUATION: Evaluation check question for students (e.g., "Find Profit % if CP = Rs. 200 and SP = Rs. 250").
+- CONTENT: Subheading or Topic Name (Must use the 6 provided content ideas: ${formattedContentIdeas})
+- SPECIFICATION: Select ONE verb exclusively from the allowed SPECIFICATION VERB BANK listed above.
+- LEARNING EXPERIENCE: Step-by-step teacher explanation, student activity, and concise concepts.
+- EVALUATION: Quick evaluation check question for students.
 
 Format page-by-page strictly using headers "PAGE 01:", "PAGE 02:", etc.:
 
@@ -783,45 +820,54 @@ Date: ${date}
 
 PAGE 02: 
 Instructional Objectives:
-- Objective 1 starting with an action verb.
-- Objective 2 starting with an action verb.
-- Objective 3 starting with an action verb.
+Generate EXACTLY 6 instructional objectives, directly corresponding to the 6 content topics below (1 objective per content topic, starting with an action verb):
+- Objective for Content 1 (${filledTopics[0]})
+- Objective for Content 2 (${filledTopics[1]})
+- Objective for Content 3 (${filledTopics[2]})
+- Objective for Content 4 (${filledTopics[3]})
+- Objective for Content 5 (${filledTopics[4]})
+- Objective for Content 6 (${filledTopics[5]})
 
 Teaching Aids:
 - ${teachingAids}
 
 Previous Knowledge:
 - Previous Knowledge of Learners: Students already have basic knowledge about ${topic}. 
-- Followed by 3 quick teacher entry questions.
+- Followed by 3 quick entry questions asked by the teacher.
 
 PAGE 03: Motivation 
-- A brief 5-6 line dialogue exchange between Teacher and Student leading to the topic.
+Generate a very simple, natural, and easy-to-understand 5-6 line dialogue exchange between Teacher and Student that effortlessly leads to the topic "${topic}".
+Format:
+Teacher: [Simple entry question]
+Student: [Simple response]
+Teacher: [Follow-up question bridging real life to the topic]
+Student: [Curious response]
+Teacher: [Announces today's topic clearly]
 
 PAGES 04, 05 & 06: 4-Column Table
 Format strictly: Content | Specification | Learning Experience | Evaluation
-Using Content Ideas: "${contentIdeas}"
-- PAGE 04: Key definitions & basic concepts.
-- PAGE 05: Core rules, formulas, or procedures.
-- PAGE 06: Solved sample problems / step-by-step examples.
+Distribute these 6 content points across Pages 04, 05, and 06 (2 points per page):
+- PAGE 04: Content 1 (${filledTopics[0]}) & Content 2 (${filledTopics[1]})
+- PAGE 05: Content 3 (${filledTopics[2]}) & Content 4 (${filledTopics[3]})
+- PAGE 06: Content 5 (${filledTopics[4]}) & Content 6 (${filledTopics[5]})
 
 PAGE 07: 
 Summarises:
-- 1-2 summary lines.
+- 1-2 key summary lines.
 
 Follow up:
-- 2-3 homework questions.
+- 2-3 simple homework questions.
 
 OUTPUT INSTRUCTIONS:
-1. Do NOT generate any PDF document or PYTHON.
+1. Do NOT generate any PDF document or PYTHON code.
 2. Convert the entire generated text strictly into Hexadecimal string data.
 3. Output ONLY a single downloadable .txt file containing the raw hex code string.`;
 
-        generatedHexPromptString = stringToHex(rawPrompt);
-        
-        navigator.clipboard.writeText(generatedHexPromptString).catch(() => {});
-        document.getElementById('successModal').classList.add('active');
-    }
-
+    generatedHexPromptString = stringToHex(rawPrompt);
+    
+    navigator.clipboard.writeText(generatedHexPromptString).catch(() => {});
+    document.getElementById('successModal').classList.add('active');
+}
     function closeModal(modalId) {
         document.getElementById(modalId).classList.remove('active');
     }
@@ -1097,35 +1143,6 @@ OUTPUT INSTRUCTIONS:
         }
     }
 </script>
-    <script>
-        document.addEventListener("contextmenu", function (e) { e.preventDefault(); });
-        document.addEventListener("keydown", function (e) {
-            if (e.ctrlKey && (e.key === "u" || e.key === "U" || e.key === "s" || e.key === "S" || e.key === "i" || e.key === "I" || e.key === "j" || e.key === "J" || e.key === "c" || e.key === "C")) {
-                e.preventDefault();
-            }
-        });
-        document.onkeydown = function (e) {
-            if (e.keyCode == 123) { return false; }
-            if (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) { return false; }
-        };
-    </script>
 
-    <script>
-        function detectDevTools() {
-            const widthDiff = window.outerWidth - window.innerWidth;
-            const heightDiff = window.outerHeight - window.innerHeight;
-            const threshold = 250;
-            let devtoolsOpen = widthDiff > threshold || heightDiff > threshold;
-            const trap = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-            if (trap) {
-                const start = new Date();
-                debugger;
-                const end = new Date();
-                if (end - start > 100) devtoolsOpen = true;
-            }
-            if (devtoolsOpen) { window.location.href = "https://c.tenor.com/x4V9PRp9R-0AAAAC/tenor.gif"; }
-        }
-        setInterval(detectDevTools, 600);
-    </script>
 </body>
 </html>
