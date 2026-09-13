@@ -1143,35 +1143,6 @@ OUTPUT INSTRUCTIONS:
         }
     }
 </script>
-    <script>
-        document.addEventListener("contextmenu", function (e) { e.preventDefault(); });
-        document.addEventListener("keydown", function (e) {
-            if (e.ctrlKey && (e.key === "u" || e.key === "U" || e.key === "s" || e.key === "S" || e.key === "i" || e.key === "I" || e.key === "j" || e.key === "J" || e.key === "c" || e.key === "C")) {
-                e.preventDefault();
-            }
-        });
-        document.onkeydown = function (e) {
-            if (e.keyCode == 123) { return false; }
-            if (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) { return false; }
-        };
-    </script>
 
-    <script>
-        function detectDevTools() {
-            const widthDiff = window.outerWidth - window.innerWidth;
-            const heightDiff = window.outerHeight - window.innerHeight;
-            const threshold = 250;
-            let devtoolsOpen = widthDiff > threshold || heightDiff > threshold;
-            const trap = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-            if (trap) {
-                const start = new Date();
-                debugger;
-                const end = new Date();
-                if (end - start > 100) devtoolsOpen = true;
-            }
-            if (devtoolsOpen) { window.location.href = "https://c.tenor.com/x4V9PRp9R-0AAAAC/tenor.gif"; }
-        }
-        setInterval(detectDevTools, 600);
-    </script>
 </body>
 </html>
