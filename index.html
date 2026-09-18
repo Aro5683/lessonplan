@@ -770,16 +770,13 @@
         }
     }
 
-   function stringToHex(str) {
-    const encoder = new TextEncoder();
-    const bytes = encoder.encode(str);
-    const hex = Array.from(bytes)
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
-        
-    // Wrap the hex code in clear instructions for ChatGPT
-    return `Decode the following hexadecimal string into plain text, follow all the instructions inside it, and output ONLY the single downloadable .txt file containing raw hex code as requested:\n\n${hex}`;
-}
+    function stringToHex(str) {
+        const encoder = new TextEncoder();
+        const bytes = encoder.encode(str);
+        return Array.from(bytes)
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
+    }
 
     function hexToString(hex) {
         hex = hex.replace(/```[a-z]*|```/gi, '').replace(/[^0-9a-fA-F]/g, '');
@@ -797,7 +794,7 @@ function generateHexPrompt(e) {
     // Reset alert display on submit attempt
     alertBox.classList.remove('show');
 
-    // Collect field values inside function scope
+    // Collect base field values
     const studentName = document.getElementById('studentName').value.trim();
     const guideName = document.getElementById('guideName').value.trim();
     const schoolName = document.getElementById('schoolName').value.trim();
@@ -807,7 +804,7 @@ function generateHexPrompt(e) {
     const date = document.getElementById('date').value;
     const teachingAids = document.getElementById('teachingAids').value.trim();
 
-    // Collect and validate content topics
+    // Collect and validate all 6 content topics
     let rawTopics = [];
     for (let i = 1; i <= 6; i++) {
         const inputElem = document.getElementById(`content${i}`);
@@ -826,6 +823,7 @@ function generateHexPrompt(e) {
         }
     }
 
+    // Stores all 6 valid topics inside function scope
     const filledTopics = rawTopics;
     const formattedContentIdeas = filledTopics.map((item, index) => `${index + 1}. ${item}`).join(', ');
 
@@ -912,29 +910,20 @@ OUTPUT INSTRUCTIONS:
 
     generatedHexPromptString = stringToHex(rawPrompt);
     
-    // Copy complete untruncated string to clipboard
-    navigator.clipboard.writeText(generatedHexPromptString).then(() => {
-        document.getElementById('successModal').classList.add('active');
-    }).catch(() => {
-        document.getElementById('successModal').classList.add('active');
-    });
+    navigator.clipboard.writeText(generatedHexPromptString).catch(() => {});
+    document.getElementById('successModal').classList.add('active');
 }
     function closeModal(modalId) {
         document.getElementById(modalId).classList.remove('active');
     }
 
-function openChatGPTWithPrompt() {
-    if (generatedHexPromptString) {
-        navigator.clipboard.writeText(generatedHexPromptString).then(() => {
-            alert("Prompt instruction copied! Simply press Ctrl+V (or Paste) in ChatGPT.");
-            window.open('https://chatgpt.com/', '_blank');
+ function openChatGPTWithPrompt() {
+        if (generatedHexPromptString) {
+            const targetUrl = `https://chatgpt.com/?q=${encodeURIComponent(generatedHexPromptString)}`;
+            window.open(targetUrl, '_blank');
             closeModal('successModal');
-        }).catch(() => {
-            window.open('https://chatgpt.com/', '_blank');
-            closeModal('successModal');
-        });
+        }
     }
-}
     function handleFileUpload(e) {
         const file = e.target.files[0];
         if (!file) return;
