@@ -794,6 +794,16 @@ function generateHexPrompt(e) {
     // Reset alert display on submit attempt
     alertBox.classList.remove('show');
 
+    // Collect field values inside function scope
+    const studentName = document.getElementById('studentName').value.trim();
+    const guideName = document.getElementById('guideName').value.trim();
+    const schoolName = document.getElementById('schoolName').value.trim();
+    const standard = document.getElementById('standard').value.trim();
+    const subject = document.getElementById('subject').value.trim();
+    const topic = document.getElementById('topic').value.trim();
+    const date = document.getElementById('date').value;
+    const teachingAids = document.getElementById('teachingAids').value.trim();
+
     // Collect and validate content topics
     let rawTopics = [];
     for (let i = 1; i <= 6; i++) {
@@ -813,12 +823,10 @@ function generateHexPrompt(e) {
         }
     }
 
-    // Stores all 6 valid topics
     const filledTopics = rawTopics;
-
     const formattedContentIdeas = filledTopics.map((item, index) => `${index + 1}. ${item}`).join(', ');
 
-   const rawPrompt = `Act as an expert B.Ed Teacher Educator. Generate a concise 7-page Lesson Plan for ${standard} ${subject} on the topic "${topic}" formatted strictly for a B.Ed practical record notebook.
+    const rawPrompt = `Act as an expert B.Ed Teacher Educator. Generate a concise 7-page Lesson Plan for ${standard} ${subject} on the topic "${topic}" formatted strictly for a B.Ed practical record notebook.
 
 STRICT SPECIFICATION VERB BANK:
 The SPECIFICATION column in Pages 04, 05, and 06 MUST ONLY use terms from this exact allowed list:
@@ -898,22 +906,29 @@ OUTPUT INSTRUCTIONS:
 1. Do NOT generate any PDF document or PYTHON code.
 2. Convert the entire generated text strictly into Hexadecimal string data.
 3. Output ONLY a single downloadable .txt file containing the raw hex code string.`;
+
     generatedHexPromptString = stringToHex(rawPrompt);
     
-    navigator.clipboard.writeText(generatedHexPromptString).catch(() => {});
-    document.getElementById('successModal').classList.add('active');
+    // Copy complete untruncated string to clipboard
+    navigator.clipboard.writeText(generatedHexPromptString).then(() => {
+        document.getElementById('successModal').classList.add('active');
+    }).catch(() => {
+        document.getElementById('successModal').classList.add('active');
+    });
 }
     function closeModal(modalId) {
         document.getElementById(modalId).classList.remove('active');
     }
 
- function openChatGPTWithPrompt() {
-        if (generatedHexPromptString) {
-            const targetUrl = `https://chatgpt.com/?q=${encodeURIComponent(generatedHexPromptString)}`;
-            window.open(targetUrl, '_blank');
-            closeModal('successModal');
-        }
+function openChatGPTWithPrompt() {
+    if (generatedHexPromptString) {
+        // Copy hex prompt to clipboard to ensure complete transfer
+        navigator.clipboard.writeText(generatedHexPromptString);
+        // Open ChatGPT in new tab cleanly without URL truncation
+        window.open('https://chatgpt.com/', '_blank');
+        closeModal('successModal');
     }
+}
     function handleFileUpload(e) {
         const file = e.target.files[0];
         if (!file) return;
