@@ -908,22 +908,28 @@ OUTPUT INSTRUCTIONS:
 2. Convert the entire generated text strictly into Hexadecimal string data.
 3. Output ONLY a single downloadable .txt file containing the raw hex code string.`;
 
-    generatedHexPromptString = stringToHex(rawPrompt);
+   generatedHexPromptString = stringToHex(rawPrompt);
     
-    navigator.clipboard.writeText(generatedHexPromptString).catch(() => {});
-    document.getElementById('successModal').classList.add('active');
+    // Copy complete untruncated string to clipboard
+    navigator.clipboard.writeText(generatedHexPromptString).then(() => {
+        document.getElementById('successModal').classList.add('active');
+    }).catch(() => {
+        document.getElementById('successModal').classList.add('active');
+    });
 }
     function closeModal(modalId) {
         document.getElementById(modalId).classList.remove('active');
     }
 
- function openChatGPTWithPrompt() {
-        if (generatedHexPromptString) {
-            const targetUrl = `https://chatgpt.com/?q=${encodeURIComponent(generatedHexPromptString)}`;
-            window.open(targetUrl, '_blank');
-            closeModal('successModal');
-        }
+function openChatGPTWithPrompt() {
+    if (generatedHexPromptString) {
+        // Copy hex prompt to clipboard to ensure complete transfer
+        navigator.clipboard.writeText(generatedHexPromptString);
+        // Open ChatGPT in new tab cleanly without URL truncation
+        window.open('https://chatgpt.com/', '_blank');
+        closeModal('successModal');
     }
+}
     function handleFileUpload(e) {
         const file = e.target.files[0];
         if (!file) return;
