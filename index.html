@@ -512,10 +512,41 @@
         }
 
         .hidden { display: none !important; }
+
+
+        /* Alert Box Styling */
+.alert-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, max-height 0.3s ease, margin-bottom 0.3s ease;
+}
+
+/* Active State Triggered by JS */
+.alert-box.show {
+    opacity: 1;
+    max-height: 100px;
+    margin-bottom: 20px;
+}
+        
     </style>
 </head>
 <body>
-
+<div id="alertBox" class="alert-box">
+    <i class="fa-solid fa-circle-exclamation"></i>
+    <span id="alertMessage">Please fill in all 6 main content topics.</span>
+</div>
 <div class="main-container">
     <div class="header">
         <h1><i class="fa-solid fa-graduation-cap"></i> B.Ed Guru</h1>
@@ -573,17 +604,17 @@
                     <input type="text" id="teachingAids" placeholder="e.g., Chart, Flashcards, Blackboard" required>
                 </div>
                 
-                    <div class="form-group full-width">
+                   <div class="form-group full-width">
     <label><i class="fa-solid fa-list-check"></i> 6 Main Content Topics / Ideas *</label>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-top: 6px;">
-        <input type="text" class="content-topic" id="content1" placeholder="e.g., Uses of OS">
-        <input type="text" class="content-topic" id="content2" placeholder="e.g., Structure of Program">
-        <input type="text" class="content-topic" id="content3" placeholder="e.g., Significance of OS">
-        <input type="text" class="content-topic" id="content4" placeholder="e.g., Functions of OS">
-        <input type="text" class="content-topic" id="content5" placeholder="e.g., Types of OS">
-        <input type="text" class="content-topic" id="content6" placeholder="e.g., OS Architecture">
-   
-</div>
+        <input type="text" class="content-topic" id="content1" placeholder="e.g., Uses of OS" required>
+        <input type="text" class="content-topic" id="content2" placeholder="e.g., Structure of Program" required>
+        <input type="text" class="content-topic" id="content3" placeholder="e.g., Significance of OS" required>
+        <input type="text" class="content-topic" id="content4" placeholder="e.g., Functions of OS" required>
+        <input type="text" class="content-topic" id="content5" placeholder="e.g., Types of OS" required>
+        <input type="text" class="content-topic" id="content6" placeholder="e.g., OS Architecture" required>
+    </div>
+
                 </div>
             </div>
 
@@ -756,43 +787,35 @@
 
 function generateHexPrompt(e) {
     e.preventDefault();
-    const studentName = document.getElementById('studentName').value;
-    const guideName = document.getElementById('guideName').value;
-    const schoolName = document.getElementById('schoolName').value;
-    const standard = document.getElementById('standard').value;
-    const subject = document.getElementById('subject').value;
-    const topic = document.getElementById('topic').value;
-    const date = document.getElementById('date').value;
-    const teachingAids = document.getElementById('teachingAids').value;
+    
+    const alertBox = document.getElementById('alertBox');
+    const alertMessage = document.getElementById('alertMessage');
+    
+    // Reset alert display on submit attempt
+    alertBox.classList.remove('show');
 
-    // 1. Collect user inputs for content topics
+    // Collect and validate content topics
     let rawTopics = [];
     for (let i = 1; i <= 6; i++) {
-        const val = document.getElementById(`content${i}`).value.trim();
+        const inputElem = document.getElementById(`content${i}`);
+        const val = inputElem.value.trim();
+        
         if (val !== '') {
             rawTopics.push(val);
-        }
-    }
-
-    if (rawTopics.length === 0) {
-        alert("Please fill in at least 1 content topic!");
-        return;
-    }
-
-   // Auto-fill missing topics up to 6 total items
-let filledTopics = [...rawTopics];
-if (filledTopics.length < 6) {
-    const remainingCount = 6 - filledTopics.length;
-    for (let i = 1; i <= remainingCount; i++) {
-        // Alternates between Core Concept and Example for missing topics
-        if (i % 2 !== 0) {
-            filledTopics.push(`Core Concept of ${topic}`);
         } else {
-            filledTopics.push(`Example for ${topic}`);
+            // Display CSS alert message
+            alertMessage.textContent = `Please fill in Content Topic #${i}. All 6 topics are required.`;
+            alertBox.classList.add('show');
+            
+            // Focus on the missing field
+            inputElem.focus();
+            return;
         }
     }
 
-}
+    // Stores all 6 valid topics
+    const filledTopics = rawTopics;
+
     const formattedContentIdeas = filledTopics.map((item, index) => `${index + 1}. ${item}`).join(', ');
 
    const rawPrompt = `Act as an expert B.Ed Teacher Educator. Generate a concise 7-page Lesson Plan for ${standard} ${subject} on the topic "${topic}" formatted strictly for a B.Ed practical record notebook.
