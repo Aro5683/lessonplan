@@ -770,13 +770,16 @@
         }
     }
 
-    function stringToHex(str) {
-        const encoder = new TextEncoder();
-        const bytes = encoder.encode(str);
-        return Array.from(bytes)
-            .map(b => b.toString(16).padStart(2, '0'))
-            .join('');
-    }
+   function stringToHex(str) {
+    const encoder = new TextEncoder();
+    const bytes = encoder.encode(str);
+    const hex = Array.from(bytes)
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+        
+    // Wrap the hex code in clear instructions for ChatGPT
+    return `Decode the following hexadecimal string into plain text, follow all the instructions inside it, and output ONLY the single downloadable .txt file containing raw hex code as requested:\n\n${hex}`;
+}
 
     function hexToString(hex) {
         hex = hex.replace(/```[a-z]*|```/gi, '').replace(/[^0-9a-fA-F]/g, '');
@@ -922,11 +925,14 @@ OUTPUT INSTRUCTIONS:
 
 function openChatGPTWithPrompt() {
     if (generatedHexPromptString) {
-        // Copy hex prompt to clipboard to ensure complete transfer
-        navigator.clipboard.writeText(generatedHexPromptString);
-        // Open ChatGPT in new tab cleanly without URL truncation
-        window.open('https://chatgpt.com/', '_blank');
-        closeModal('successModal');
+        navigator.clipboard.writeText(generatedHexPromptString).then(() => {
+            alert("Prompt instruction copied! Simply press Ctrl+V (or Paste) in ChatGPT.");
+            window.open('https://chatgpt.com/', '_blank');
+            closeModal('successModal');
+        }).catch(() => {
+            window.open('https://chatgpt.com/', '_blank');
+            closeModal('successModal');
+        });
     }
 }
     function handleFileUpload(e) {
